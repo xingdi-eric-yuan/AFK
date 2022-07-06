@@ -67,10 +67,10 @@ class ReplayMemory(object):
         next_nodes = trajectory[head + n].nodes
         next_vocab_mask_ids = trajectory[head + n].vocab_mask_ids
 
-        # 1 2 [3] 4 5 (6) 7 8 9f
-        how_long = final - head + 1 if self.accumulate_reward_from_final else n + 1
+        # rewards are in the next steps
+        how_long = final - head + 1 if self.accumulate_reward_from_final else n
         accumulated_rewards = [self.discount_gamma ** i *
-                               trajectory[head + i].reward for i in range(how_long)]
+                               trajectory[head + i + 1].reward for i in range(how_long)]
         accumulated_rewards = accumulated_rewards[:n + 1]
         reward = torch.sum(torch.stack(accumulated_rewards))
 
